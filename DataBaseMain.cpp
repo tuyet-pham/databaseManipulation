@@ -3,7 +3,6 @@
 * Copyright 2013, Tuyet Pham, All rights reserved.
 */
 
-#include "pch.h"
 #include "database_.h"  
 #include <iostream>
 #include <fstream>
@@ -561,7 +560,7 @@ bool OPEN_MANIP(string filename)
 {
 	if (checkEXIST(filename) == true) {
 
-
+	//Opening database object here, More operation is needed.
 
 		return true;
 	}
