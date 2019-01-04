@@ -1,9 +1,3 @@
 ******************************************
 EXISTING FILES 
 ******************************************
-BookstoreInventory
-Inventory
-Grades
-VideosArchive
-Grades2
-FilmArchive
