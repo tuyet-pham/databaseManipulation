@@ -3,13 +3,13 @@
 * Copyright 2013, Tuyet Pham, All rights reserved.
 */
 
+#include "pch.h"
 #include "database_.h"  
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <regex>
 #include <windows.h>   // WinApi header
-#include "log_.h"
 using namespace std;
 
 /***OPENING LOGGING CLASS***/
@@ -29,7 +29,6 @@ bool SYNC_FILEnLIST();
 bool PROMPT_EXIT();
 bool checkEXIST(string);
 bool viewLIST();
-
 bool OPEN_MANIP(string);
 
 int main()
@@ -42,14 +41,10 @@ int main()
 	SYNC_FILEnLIST();
 
 
-	do {
-		string username;
-		string password;
-		cout << "\nUsername \n> ";
-		cin >> username;
-		cout << "Password \n> ";
-		cin >> password;
 
+	do {
+		string username = MYUSERNAME;
+		string password = MYPASSWORD;
 		
 		if (username == MYUSERNAME && password == MYPASSWORD) {
 			mainLOG.LOG_T("User Verified");
@@ -73,7 +68,7 @@ int main()
 					}
 					else {
 						cout << "\n" + filename << " chosen." << endl;
-						//OPEN DATA MANIPULATION HERE.
+						OPEN_MANIP(filename);
 					}
 
 				}
@@ -86,7 +81,8 @@ int main()
 						cout << "\nThis file doesn't exist in the directory. If you want to add it to the list, place it in the same directory.";
 					}
 					else {
-						cout << "\n" << filename << " was added!";
+						cout << "\n" + filename << " chosen." << endl;
+						OPEN_MANIP(filename);
 					}
 
 				}
@@ -221,7 +217,8 @@ string MAIN_MENU() {
 string ULIST_ENTRY()
 {
 	string usrentry;
-	if (viewLIST() == false) {					//If fails -> then log & return -1; 
+	if (viewLIST() == false) {				
+		//If fails -> then log & return -1; 
 		mainLOG.LOG_T("Trouble opening existingfiles.txt");
 		return "-1";
 	}
@@ -381,16 +378,22 @@ bool ADD_FILE(string filename)
 			mainLOG.LOG_T("Getting user input for attribute");
 
 			string attributes;
+			string KEY;
 			cout << "\nPLEASE READ\nThe file " << filename << " was made. List out it's attributes with no space, divided by a '|' character. DO NOT put a '|' at the end i.e.";
 			cout << "\nEXAMPLE --> ID|FIRST|LAST|STREET|STATE . . . .|ZIP\n>";
 			cin.ignore();
 			getline(cin, attributes);
+
+			cout << "\n\nWhat is the Key attributes?\n>";
+			cin.ignore();
+			getline(cin, KEY);
 
 			cout << "\nYour attibutes for this table is " << attributes << ". Is this correct?[Y/N]>";
 			cin >> DONE;
 
 			//Check if the user entered correctly
 			if (tolower(DONE) == 'y') {
+				newfile << KEY;
 				newfile << attributes;
 				done = true;
 				mainLOG.LOG_T("Adding intital attributes to " + filename);
@@ -559,9 +562,8 @@ bool SYNC_FILEnLIST()
 bool OPEN_MANIP(string filename)
 {
 	if (checkEXIST(filename) == true) {
-
-	//Opening database object here, More operation is needed.
-
+		database_ data(filename);
+		data.dataMAIN();
 		return true;
 	}
 	else {
