@@ -12,4 +12,4 @@ This system isn't fully complete. The only class that isn't fully functional is 
 
 https://gfycat.com/soggyimpossiblelhasaapso
 
-[1/14/2019] Bug found withing the chaining attributes. Need to find a better way to integrate. 
+[1/14/2019] Bug found within the chaining attributes for collision. Need to find a better way to integrate. 
