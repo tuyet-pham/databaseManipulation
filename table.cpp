@@ -129,6 +129,25 @@ int table::tableSize()
 	return this->TABLESIZE;
 }
 
+vector<string> table::getRec()
+{
+	vector<string> All_REC;
+
+	for (int i = 0; i < MAXROWSIZE; i++) {
+		if (HASHTABLE[i] != NULL) {
+			string temp;
+			temp.append(HASHTABLE[i]->getKEY());
+			for (auto atr : COL_ELE) {
+				temp.append("|");
+				temp.append(HASHTABLE[i]->getColumnValue(atr));
+			}
+			All_REC.push_back(temp);
+		}
+	}
+
+	return All_REC;
+}
+
 
 /**********************************
 	 To make and delete a record.
@@ -193,17 +212,19 @@ bool table::deleteRecord(string key)
 	int INDEX = table::INDEX_HASH(key);
 
 	if (HASHTABLE[INDEX]->getKEY() != key) {
-		for (auto RECORD : HASHTABLE) {
-			if (RECORD->getKEY() == key) {
-				delete RECORD;
+		for (int i = 0; i < MAXROWSIZE; i++) {
+			if (HASHTABLE[i]->getKEY() == key) {
+				delete HASHTABLE[i];
+				HASHTABLE[i] = NULL;
 				TABLESIZE--;
 				return true;
 			}
+		
 		}
 	}
 	else if (HASHTABLE[INDEX]->getKEY() == key) {
-		auto it = &HASHTABLE[INDEX];
-		delete it;
+		delete HASHTABLE[INDEX];
+		HASHTABLE[INDEX] = NULL;
 		TABLESIZE--;
 		return true;
 	}
@@ -219,22 +240,25 @@ bool table::deleteRecord(string key)
 bool table::addColumn(string columnName)
 {
 	bool found = false;
-	string EMPTY = "EMPTY";
+	string EMPTY = "~";
 
-	for (auto columnEle : COL_ELE) {
-		if (columnEle == columnName) {
+
+	for (auto columnEle = COL_ELE.begin(); columnEle != COL_ELE.end(); columnEle++) {
+		if (*columnEle == columnName) {
 			found = true;
 		}
 	}
 
 	if (found == true) {
+		
 		return false;
 	}
 	else {
+
 		COL_ELE.push_back(columnName);
-		for (auto rec : HASHTABLE) {
-			if (rec != NULL) {
-				rec->addColumn(columnName, EMPTY);
+		for (int i = 0; i < MAXROWSIZE; i++) {
+			if (HASHTABLE[i] != NULL) {
+				HASHTABLE[i]->addColumn(columnName, EMPTY);
 			}
 		}
 		return true;
@@ -245,14 +269,15 @@ bool table::deleteColumn(string columnName)
 {
 	bool found = false;
 
-	for (auto columnEle : COL_ELE) {
-		if (columnEle == columnName) {
+	for (auto columnEle = COL_ELE.begin(); columnEle != COL_ELE.end(); columnEle++) {
+		if (*columnEle == columnName) {
 			found = true;
+			columnEle = COL_ELE.erase(columnEle);
 		}
 	}
 
+
 	if (found == true) {
-		COL_ELE.push_back(columnName);
 		for (auto rec : HASHTABLE) {
 			if (rec != NULL) {
 				rec->deleteColumn(columnName);
