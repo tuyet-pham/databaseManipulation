@@ -32,20 +32,24 @@ private:
 	bool CHANGEVALUE();
 	bool DELETECOLUMN();
 	bool ADDCOLUMN();
-	bool CHANGENAME();
-	bool CHANGE_KEY();
-
+	bool CHANGETABLENAME();
 
 	//Intefaces 
 	string dataMENU();
 	void dataMSG();
 	bool PROMPT_EXIT();
+	bool FILEWRITEWARNING();
 
 
 	//Helper Methods
 	bool col_cutter(string line);
 	bool addFromSync(string);
 	vector<string>getColumnvalue(string line);
+	string getColValue();
+	string getString();
+
+	
+
 
 public:
 	//Constructor
