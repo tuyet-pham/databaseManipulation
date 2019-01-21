@@ -5,11 +5,9 @@
 
 #include "pch.h"
 #include "database_.h"  
-#include <iostream>
 #include <fstream>
 #include <string>
 #include <regex>
-#include <windows.h>   // WinApi header
 using namespace std;
 
 /***OPENING LOGGING CLASS***/
