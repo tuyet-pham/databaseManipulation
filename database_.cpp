@@ -67,19 +67,14 @@ int database_::dataMAIN()
 		}
 		else if (choice == "G" || choice == "g") {
 			myLog.LOG_T("User picked choice 'G' ");
-			CHANGENAME();
-		}
+			CHANGETABLENAME();
+		}	
 		else if (choice == "H" || choice == "h") {
 			myLog.LOG_T("User picked choice 'H' ");
-			CHANGE_KEY();
-		}
-		else if (choice == "I" || choice == "I") {
-			myLog.LOG_T("User picked choice 'I' ");
 			WRITE();
 		}
-		else if (choice == "J" || choice == "j") {
-
-			myLog.LOG_T("Choice J chosen by user");
+		else if (choice == "I" || choice == "i") {
+			myLog.LOG_T("Choice I chosen by user");
 			if (PROMPT_EXIT() == true) {
 				done = true;
 			}
@@ -99,7 +94,6 @@ int database_::dataMAIN()
 	return 0;
 }
 
-
 string database_::dataMENU()
 {
 	//WINDOWS COLORING
@@ -118,14 +112,12 @@ string database_::dataMENU()
 		<< "\nE. Delete entire column"
 		<< "\nF. Add column to All"
 		<< "\nG. Change table name "
-		<< "\nH. Change KEY of - "
-		<< "\nI. Save"
-		<< "\nJ. Exit\nPlease enter choice #\n> ";
+		<< "\nH. Save"
+		<< "\nI. Exit\nPlease enter choice #\n> ";
 	SetConsoleTextAttribute(hConsole, 15);
 	cin >> choice;
 	return choice;
 }
-
 
 void database_::dataMSG()
 {
@@ -134,7 +126,6 @@ void database_::dataMSG()
 		<< "\nPlease chose what you want to do with the choosen file. Make sure to select save to write to file. " 
 		<< "\n-------------------------------------------------------------------------------------------------------" << endl;
 }
-
 
 bool database_::PROMPT_EXIT()
 {
@@ -150,6 +141,23 @@ bool database_::PROMPT_EXIT()
 	}
 }
 
+bool database_::FILEWRITEWARNING(){
+
+	string answer;
+	cout << "\Please proceed with caution for you are about to write over your file.";
+	cout << "\nThis means your old file will be deleted.";
+	cout << "\nAre you sure you would like to delete this file? [Y/N] \n> ";
+	cin.ignore();
+	getline(cin, answer);
+
+	if (answer == "y" || answer == "Y") {
+		return true;
+	}
+	else {
+		return false;
+	}
+	return false;
+}
 
 /**********************************
 		Private Methods
@@ -191,82 +199,67 @@ bool database_::SYNC_TABLE()
 		}
 		count++;
 	}
+
+	this->TABLEFILE.close();
+
+
 	return true;
 }
 
 void database_::VIEWTABLE() {
+
+	/****************** Currently can only display the whole table *******************/
 	MYTABLE.displayTable();
 }
 
 bool database_::ADDRECORD()
 {
-
-	cout << "\n******************* Adding Record **********************";
 	myLog.LOG_T("Adding a record . . . ");
+
+
+	cout << "\n******************* Adding Record **********************\n";
 	bool leave = false;
 
 
 	do {
 
-		Record * REC = new Record;
+		//Getting key and init checking if it exists already
 		string key;
-		string colVAL;
-		int counter = 0;
-		string answer;
-		bool CORRECT = false;
-		string leaveanswer;
-
-
-		cout << "\n\nPlease enter the Record's key value.\n>";
+		cout << "\nPlease enter the Record's key value.\n>";
 		cin.ignore();
-		cin >> key;
+		getline(cin, key);
 		
 
 		if(MYTABLE.exists(key) == true){
+			myLog.LOG_T("Adding Record fail because : " + key + " already exists");
 			return false;
 		}
 
+		/***************************************  IF KEY DOESN'T ALREADY EXIST  **************************************/
+		
+		Record * REC = new Record;
+		string colVAL;
+		string leaveanswer;
 
-		system("PAUSE");
-
-		REC->setKEY(key);
-
+		
 		cout << "\nThe Columns of the Record are : ";
 		for (auto g : INIT_ATT) {
 			cout << g << " ";
 		}
+
 		cout << endl;
 
-		do {
-
-			colVAL.clear();
-			cout << "\nPlease enter the column values separated by a '|'. If empty, enter ~ .\ni.e. 12589|John|~|MaryLand's Street. . . |USA\n>";
-			cin.ignore();
-			getline(cin, colVAL);
-
-
-			// Is the above answer correct ?
-			cout << "\nAre the values correct [Y/N] : " << colVAL << "\n>";
-			cin >> answer;
-
-			if (answer == "y" || answer == "Y") {
-				cout << "\nRecord was added!";
-				CORRECT = true;
-			}
-			else {
-				cout << "\nTry Again.";
-				CORRECT = false;
-			}
-
-		} while (CORRECT == false);
-
 		//Getting the values that was given 
-		vector<string> col = getColumnvalue(colVAL);
+		vector<string> col = getColumnvalue(getColValue());
 
+
+		//Setting the key to  new record
+		REC->setKEY(key);
+
+		//Seeting the columns witht the values given
 		for (int i = 0; i < INIT_ATT.size(); i++) {
 			REC->addColumn(INIT_ATT[i], col[i]);
 		}
-
 
 		cout << "\nDo you want to keep adding a Record [Y/N]?\n>";
 		cin >> leaveanswer;
@@ -279,6 +272,7 @@ bool database_::ADDRECORD()
 			else {
 				myLog.LOG_T("Record was added : " + REC->getKEY());
 			}
+
 			leave = false;
 		}
 		else {
@@ -294,14 +288,19 @@ bool database_::ADDRECORD()
 		}
 
 	} while (leave == false);
-
 	return true;
 }
 
-
 bool database_::DELETERECORD()
 {
-	return false;
+	string recToDel = getString();
+	
+	if(MYTABLE.deleteRecord(recToDel) == true) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 bool database_::CHANGEVALUE()
@@ -339,27 +338,107 @@ bool database_::CHANGEVALUE()
 
 bool database_::DELETECOLUMN()
 {
+	string colToDel = getString();
+	bool found = false;
+	for (auto colname = INIT_ATT.begin(); colname != INIT_ATT.end(); colname++) {
+		if (colToDel == *colname) {
+			found = true;
+			colname = INIT_ATT.erase(colname);
+		}
+	}
+
+	if (found == true) {
+		if (MYTABLE.deleteColumn(colToDel) == true) {
+			return true;
+		}
+	}
 	return false;
 }
 
 bool database_::ADDCOLUMN()
 {
+	string colToAdd = getString();
+	bool found = false;
+
+	for (auto colname : INIT_ATT) {
+		if (colToAdd == colname) {
+			found = true;
+		}
+	}
+
+	if (found == true) {
+		return false;
+	}
+	else {
+		INIT_ATT.push_back(colToAdd);
+		if (MYTABLE.addColumn(colToAdd) == true) {
+			return true;
+		}
+	}
 	return false;
 }
 
-bool database_::CHANGENAME()
+bool database_::CHANGETABLENAME()
 {
-	return false;
-}
-
-bool database_::CHANGE_KEY()
-{
-	return false;
+	string newTableName = getString();
+	MYTABLE.setTableName(newTableName);
+	return true;
 }
 
 bool database_::WRITE()
 {
-	return false;
+
+	if (FILEWRITEWARNING() == false) {
+		return false;
+	}
+
+	//Testing to see if the file exists.
+	this->TABLEFILE.open(this->tablefilename);
+	if (TABLEFILE.is_open() == false) {
+		return false;
+	}
+	this->TABLEFILE.close();
+	
+	//removing old existingfiles.txt
+	if (std::remove(tablefilename.c_str()) != 0) {
+		perror("\nDelete operation of old existingfiles.txt fails.");
+		return false;
+	}
+	else {
+
+		//Creating new existingfiles.txt 
+		ofstream outfile(tablefilename);
+
+		vector<string> toPRINT;
+		string colToPRINT;
+
+		toPRINT.push_back(MYTABLE.getTableName());
+		toPRINT.push_back(MYTABLE.getKeyElement());
+
+		for (int i = 0; i < INIT_ATT.size(); i++) {
+			colToPRINT = colToPRINT.append(INIT_ATT[i]);
+			if (i != INIT_ATT.size() - 1) {
+				colToPRINT.append("|");
+			}
+		}
+
+		toPRINT.push_back(colToPRINT);
+		vector<string> recToPRINT = MYTABLE.getRec();
+		
+		for (int i = 0; i < recToPRINT.size(); i++) {
+			toPRINT.push_back(recToPRINT[i]);
+		}
+
+		for (int i = 0; i < toPRINT.size(); i++) {
+			outfile << toPRINT[i] << endl;
+		}
+
+
+		outfile.close();
+		return true;
+	}
+
+	
 }
 
 
@@ -368,7 +447,6 @@ bool database_::WRITE()
 /**********************************
 		Helper Methods
 ***********************************/
-
 
 bool database_::addFromSync(string rec)
 {
@@ -397,7 +475,6 @@ bool database_::addFromSync(string rec)
 	return true;
 }
 
-
 bool database_::col_cutter(string line)
 {
 	istringstream ss(line);
@@ -417,7 +494,6 @@ bool database_::col_cutter(string line)
 	return true;
 }
 
-
 vector<string> database_::getColumnvalue(string line)
 {
 	vector<string> colval;
@@ -431,5 +507,46 @@ vector<string> database_::getColumnvalue(string line)
 	return colval;
 }
 
+string database_::getColValue()
+{
+	bool CORRECT = false;
+	string finalCol;
 
+	do {
+
+		string col;
+		string answer;
+
+		cout << "\nPlease enter the column values separated by a '|'. If empty, enter ~ .\ni.e. 12589|John|~|MaryLand's Street. . . |USA\n>";
+		cin.ignore();
+		getline(cin, col);
+
+
+		// Is the above answer correct ?
+		cout << "\nAre the values correct [Y/N] : " << col << "\n>";
+		cin >> answer;
+
+		if (answer == "y" || answer == "Y") {
+			finalCol = col;
+			CORRECT = true;
+		}
+		else {
+			cout << "\nTry Again.";
+			CORRECT = false;
+		}
+
+	} while (CORRECT == false);
+
+	return finalCol;
+}
+
+string database_::getString()
+{
+	string NAME;
+	cout << "\nPlease Enter name \n> ";
+	cin.ignore();
+	getline(cin, NAME);
+	return NAME;
+
+}
 
