@@ -83,6 +83,11 @@ public:
 	bool exists(string key);
 	int tableSize();
 
+
+	//GET THE RECORDS
+	vector<string> getRec();
+
+
 };
 
 #endif // !TABLE_
