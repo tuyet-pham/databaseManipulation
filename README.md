@@ -15,7 +15,10 @@ The database_ is functional. It could use some error checking later down the lin
 https://gfycat.com/soggyimpossiblelhasaapso
 
 [1/14/2019] Bug found within the chaining attributes for collision. Need to find a better way to integrate. 
+
 [1/16/2019] Bug found when trying to delete the entire column
+
 [1/17/2019] Trouble when using auto, switch most usage of auto into reg. for-loop, unless it's only printing.
+
 [1/20/2019] WRITE() in database_.cpp is written and up and running. The database class needs aditional error checking for user input control. It is running how I intended it to run. 
 
