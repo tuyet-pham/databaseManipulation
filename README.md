@@ -11,7 +11,7 @@ Then through the program it will give you the ability to manipulate the data as 
 
 **!! Please run as g++ -std=c++11**
 
-![](https://gfycat.com/soggyimpossiblelhasaapso)
+![](https://gfycat.com/soggyimpossiblelhasaapso.gif)
 
 **[1/14/2019]** Bug found within the chaining attributes for collision. Need to find a better way to integrate. 
 
