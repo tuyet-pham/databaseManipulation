@@ -3,7 +3,6 @@
 * Copyright 2013, Tuyet Pham, All rights reserved.
 */
 
-#include "pch.h"
 #include "database_.h"  
 #include <fstream>
 #include <string>

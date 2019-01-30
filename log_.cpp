@@ -1,4 +1,4 @@
-#include "pch.h"
+
 #include "log_.h"
 #include <string>
 #pragma warning(disable : 4996)

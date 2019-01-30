@@ -3,7 +3,6 @@
 *	Written by : Tuyet Pham
 */
 
-#include "pch.h"
 #include "table.h"
 
 /**********************************
