@@ -4,14 +4,12 @@ DataBase system - 12/28/2018
 Copyright 2013, Tuyet Pham, All rights reserved
 ```
 
+<strike>This system isn't fully complete. The only class that isn't fully functional is the Database class. Everything else should work properly</strike>
+
 This is essentially a text manipulation program. It takes in a text file that's formatted to look like a table. 
 Then through the program it will give you the ability to manipulate the data as if you were using a table manipulation program like say exel. It also has a logger class that will log your movement to a .txt file. It has several corresponding .txt file so please include all.
 
-<strike>This system isn't fully complete. The only class that isn't fully functional is the Database class. Everything else should work properly</strike>
-
-The database_ is functional. It could use some error checking later down the line. 
-
-!! Please run as g++ -std=c++11 and also take off the header "pch.h" because it's a Visual Studio element !!
+**!! Please run as g++ -std=c++11 and also take off the header "pch.h" because it's a Visual Studio element !!**
 
 https://gfycat.com/soggyimpossiblelhasaapso
 
