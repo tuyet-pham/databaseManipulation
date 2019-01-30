@@ -11,9 +11,9 @@
 
 #ifndef LOG_
 #define LOG_
-static class log_ {
+class log_ {
 private:
-	std::string MYLOGGER = "LOG_FILE.txt";
+	const std::string MYLOGGER = "LOG_FILE.txt";
 	std::fstream log_stream;
 	std::string ex_msg = "\n!!CAUTION PROCEEDING!! --> PLEASE READ \n --> The logger file isn't open. "
 		"The log proceeding will not be recorded.\n";

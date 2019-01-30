@@ -95,11 +95,6 @@ int database_::dataMAIN()
 
 string database_::dataMENU()
 {
-	//WINDOWS COLORING
-	HANDLE  hConsole;
-	int k = 6;
-	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hConsole, k);
 
 	string choice;
 	cout << "\nDataBase Menu"
@@ -113,7 +108,6 @@ string database_::dataMENU()
 		<< "\nG. Change table name "
 		<< "\nH. Save"
 		<< "\nI. Exit\nPlease enter choice #\n> ";
-	SetConsoleTextAttribute(hConsole, 15);
 	cin >> choice;
 	return choice;
 }
@@ -143,7 +137,7 @@ bool database_::PROMPT_EXIT()
 bool database_::FILEWRITEWARNING(){
 
 	string answer;
-	cout << "\Please proceed with caution for you are about to write over your file.";
+	cout << "\nPlease proceed with caution for you are about to write over your file.";
 	cout << "\nThis means your old file will be deleted.";
 	cout << "\nAre you sure you would like to delete this file? [Y/N] \n> ";
 	cin.ignore();

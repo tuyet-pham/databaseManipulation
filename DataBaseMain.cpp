@@ -181,12 +181,6 @@ bool PROMPT_EXIT()
 * task : Main menu for the entire program
 */
 string MAIN_MENU() {
-	
-	//WINDOWS COLORING
-	HANDLE  hConsole;
-	int k = 3;
-	hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hConsole, k);
 
 	string choice;
 	cout << "\nMain Menu"
@@ -198,8 +192,6 @@ string MAIN_MENU() {
 		<< "\n5. Synch list and file."
 		<< "\n6. View list"
 		<< "\n7. Shut Down \nPlease enter choice #\n> ";
-
-	SetConsoleTextAttribute(hConsole, 15);
 	cin >> choice;
 	return choice;
 }
